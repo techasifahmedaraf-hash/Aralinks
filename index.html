@@ -1,0 +1,2525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ara Links — Your Personal Link Library</title>
+  <meta name="description" content="A premium link saving and organization app." />
+  <meta name="theme-color" content="#0f0f13" />
+
+  <!-- PWA Manifest (inline via JS) -->
+  <link rel="manifest" href="#" id="manifest-link" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =========================================================
+       CSS — ARA LINKS
+       Design: Refined editorial dark luxury
+       ========================================================= */
+
+    /* --- CSS Variables / Theming --- */
+    :root {
+      --bg-primary:    #0f0f13;
+      --bg-secondary:  #16161e;
+      --bg-tertiary:   #1e1e2a;
+      --bg-card:       #19191f;
+      --bg-hover:      #22222e;
+      --bg-modal:      #1a1a24;
+
+      --border:        rgba(255,255,255,0.07);
+      --border-strong: rgba(255,255,255,0.13);
+
+      --text-primary:  #f0ede8;
+      --text-secondary:#9e9aac;
+      --text-muted:    #5e5a6e;
+      --text-accent:   #c8a96e;
+
+      --accent:        #c8a96e;
+      --accent-dim:    rgba(200,169,110,0.15);
+      --accent-glow:   rgba(200,169,110,0.25);
+      --danger:        #e05c6a;
+      --danger-dim:    rgba(224,92,106,0.15);
+      --success:       #6ec89a;
+      --success-dim:   rgba(110,200,154,0.15);
+      --info:          #6eb4c8;
+
+      --sidebar-w:     260px;
+      --header-h:      60px;
+      --radius:        12px;
+      --radius-sm:     8px;
+      --radius-lg:     18px;
+
+      --shadow-sm:  0 2px 8px rgba(0,0,0,0.3);
+      --shadow-md:  0 4px 24px rgba(0,0,0,0.4);
+      --shadow-lg:  0 8px 48px rgba(0,0,0,0.55);
+
+      --transition: 0.18s ease;
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body:    'DM Sans', system-ui, sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+
+      /* Tag palette */
+      --tag-1: #c8a96e; --tag-1-bg: rgba(200,169,110,0.15);
+      --tag-2: #6eb4c8; --tag-2-bg: rgba(110,180,200,0.15);
+      --tag-3: #6ec89a; --tag-3-bg: rgba(110,200,154,0.15);
+      --tag-4: #c86ec8; --tag-4-bg: rgba(200,110,200,0.15);
+      --tag-5: #e05c6a; --tag-5-bg: rgba(224,92,106,0.15);
+      --tag-6: #c8c86e; --tag-6-bg: rgba(200,200,110,0.15);
+    }
+
+    [data-theme="light"] {
+      --bg-primary:    #f5f3ef;
+      --bg-secondary:  #ece9e3;
+      --bg-tertiary:   #e4e0d8;
+      --bg-card:       #faf9f7;
+      --bg-hover:      #eeebe5;
+      --bg-modal:      #f7f5f1;
+
+      --border:        rgba(0,0,0,0.08);
+      --border-strong: rgba(0,0,0,0.14);
+
+      --text-primary:  #1a1814;
+      --text-secondary:#6b6560;
+      --text-muted:    #a09b94;
+      --text-accent:   #9b7a3a;
+
+      --accent:        #9b7a3a;
+      --accent-dim:    rgba(155,122,58,0.12);
+      --accent-glow:   rgba(155,122,58,0.2);
+      --danger:        #c0394a;
+      --danger-dim:    rgba(192,57,74,0.1);
+      --success:       #2e8a5e;
+      --success-dim:   rgba(46,138,94,0.1);
+
+      --shadow-sm:  0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md:  0 4px 24px rgba(0,0,0,0.1);
+      --shadow-lg:  0 8px 48px rgba(0,0,0,0.14);
+    }
+
+    /* --- Reset & Base --- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font-body); cursor: pointer; border: none; background: none; }
+    input, textarea, select { font-family: var(--font-body); }
+    ul { list-style: none; }
+    img { max-width: 100%; display: block; }
+
+    ::selection { background: var(--accent-dim); color: var(--accent); }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
+
+    /* --- Layout --- */
+    .app { display: flex; height: 100vh; overflow: hidden; }
+
+    /* ===================== SIDEBAR ===================== */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: fixed;
+      left: 0; top: 0;
+      z-index: 100;
+      transition: transform var(--transition), box-shadow var(--transition);
+      overflow: hidden;
+    }
+
+    .sidebar.collapsed { transform: translateX(-100%); box-shadow: none; }
+
+    .sidebar-logo {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar-logo .logo-mark {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 70%, transparent));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--bg-primary);
+      flex-shrink: 0;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .sidebar-logo .logo-text {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--text-primary);
+    }
+
+    .sidebar-logo .logo-text span {
+      color: var(--text-muted);
+      font-weight: 400;
+      font-size: 11px;
+      display: block;
+      font-family: var(--font-body);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: -2px;
+    }
+
+    .sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 10px; }
+
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 14px 10px 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+      font-size: 13.5px;
+      font-weight: 400;
+      user-select: none;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .nav-item.active .nav-icon { color: var(--accent); }
+
+    .nav-icon {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+      opacity: 0.75;
+    }
+
+    .nav-item.active .nav-icon { opacity: 1; }
+
+    .nav-badge {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--bg-tertiary);
+      color: var(--text-muted);
+      padding: 1px 7px;
+      border-radius: 99px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .nav-item.active .nav-badge {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+
+    /* Collections */
+    .collection-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+      font-size: 13px;
+      user-select: none;
+    }
+
+    .collection-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .collection-item.active { background: var(--accent-dim); color: var(--accent); }
+
+    .collection-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .collection-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .collection-actions { display: flex; gap: 4px; opacity: 0; transition: opacity var(--transition); }
+    .collection-item:hover .collection-actions { opacity: 1; }
+
+    .collection-action-btn {
+      width: 22px; height: 22px;
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      transition: all var(--transition);
+      font-size: 13px;
+    }
+    .collection-action-btn:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+    .collection-action-btn.del:hover { color: var(--danger); }
+
+    .add-collection-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition);
+      font-size: 13px;
+      width: 100%;
+      text-align: left;
+      border: 1px dashed var(--border-strong);
+      margin-top: 6px;
+    }
+    .add-collection-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .sidebar-footer {
+      padding: 12px 10px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* Theme toggle */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .theme-toggle:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+    .toggle-switch {
+      margin-left: auto;
+      width: 36px; height: 20px;
+      background: var(--bg-tertiary);
+      border-radius: 99px;
+      position: relative;
+      transition: background var(--transition);
+      flex-shrink: 0;
+      border: 1px solid var(--border-strong);
+    }
+    .toggle-switch.on { background: var(--accent); border-color: var(--accent); }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      transition: transform var(--transition);
+    }
+    .toggle-switch.on::after { transform: translateX(16px); }
+
+    /* ===================== MAIN ===================== */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      transition: margin-left var(--transition);
+    }
+
+    .main.full { margin-left: 0; }
+
+    /* --- Top Header --- */
+    .header {
+      height: var(--header-h);
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 20px;
+      flex-shrink: 0;
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .sidebar-toggle {
+      width: 34px; height: 34px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-secondary);
+      transition: all var(--transition);
+      flex-shrink: 0;
+    }
+    .sidebar-toggle:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+    /* Search Bar */
+    .search-wrap {
+      flex: 1;
+      max-width: 480px;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 36px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0 36px 0 38px;
+      color: var(--text-primary);
+      font-size: 13.5px;
+      transition: all var(--transition);
+      outline: none;
+    }
+
+    .search-input::placeholder { color: var(--text-muted); }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      background: var(--bg-card);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    .search-shortcut {
+      position: absolute;
+      right: 10px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      pointer-events: none;
+    }
+
+    .search-input:focus + .search-shortcut { display: none; }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .header-btn {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: all var(--transition);
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+    }
+    .header-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+    .header-btn.primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-color: var(--accent);
+      font-weight: 600;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .header-btn.primary:hover {
+      filter: brightness(1.1);
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    /* Sort / Filter bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    .view-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: 0.01em;
+      flex: 1;
+    }
+
+    .view-title small {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 400;
+      display: block;
+      margin-top: -2px;
+    }
+
+    .filter-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-tag {
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      color: var(--text-secondary);
+      background: transparent;
+      transition: all var(--transition);
+    }
+    .filter-tag:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-tag.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+    .sort-select {
+      height: 32px;
+      padding: 0 10px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 12.5px;
+      outline: none;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-family: var(--font-body);
+    }
+    .sort-select:focus { border-color: var(--accent); }
+
+    /* ===================== CONTENT ===================== */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    /* Links Grid */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+    }
+
+    /* Link Card */
+    .link-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all var(--transition);
+      position: relative;
+      cursor: grab;
+      animation: cardIn 0.28s ease both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .link-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .link-card.dragging {
+      opacity: 0.4;
+      cursor: grabbing;
+      transform: scale(0.97);
+    }
+
+    .link-card.drag-over {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-dim);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .card-favicon {
+      width: 34px; height: 34px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 16px;
+      overflow: hidden;
+    }
+
+    .card-favicon img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    .card-info { flex: 1; min-width: 0; }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      cursor: pointer;
+      transition: color var(--transition);
+    }
+    .card-title:hover { color: var(--accent); }
+
+    .card-url {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .tag-pill {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 9px;
+      border-radius: 99px;
+      cursor: pointer;
+      transition: filter var(--transition);
+    }
+    .tag-pill:hover { filter: brightness(1.2); }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: auto;
+      padding-top: 4px;
+    }
+
+    .card-date {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-right: auto;
+    }
+
+    .card-action {
+      width: 30px; height: 30px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      transition: all var(--transition);
+      font-size: 13px;
+    }
+    .card-action:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .card-action.fav.on { color: var(--accent); }
+    .card-action.delete:hover { color: var(--danger); background: var(--danger-dim); }
+
+    /* Favorite star animation */
+    .card-action.fav.on svg { animation: starPop 0.3s cubic-bezier(0.34,1.56,0.64,1) both; }
+    @keyframes starPop {
+      from { transform: scale(0.5); }
+      to   { transform: scale(1); }
+    }
+
+    /* ===================== EMPTY STATE ===================== */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 20px;
+      gap: 16px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .empty-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      border: 2px dashed var(--border-strong);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      animation: floatBob 3s ease-in-out infinite;
+    }
+    @keyframes floatBob {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .empty-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .empty-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      max-width: 320px;
+      line-height: 1.6;
+    }
+
+    .empty-cta {
+      margin-top: 6px;
+      padding: 10px 24px;
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .empty-cta:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* ===================== MODAL ===================== */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--bg-modal);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.94) translateY(10px);
+      transition: transform 0.22s cubic-bezier(0.34,1.3,0.64,1);
+    }
+
+    .modal-overlay.open .modal { transform: none; }
+
+    .modal-header {
+      padding: 20px 22px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      transition: all var(--transition);
+    }
+    .modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+    .modal-body { padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; }
+
+    .modal-footer {
+      padding: 0 22px 20px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    /* Form Fields */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+
+    .field label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: all var(--transition);
+      width: 100%;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    .field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+    .field input::placeholder,
+    .field textarea::placeholder { color: var(--text-muted); }
+
+    .field-error {
+      font-size: 12px;
+      color: var(--danger);
+      display: none;
+    }
+    .field.has-error input { border-color: var(--danger); }
+    .field.has-error .field-error { display: block; }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex; align-items: center; gap: 7px;
+      font-family: var(--font-body);
+      border: none;
+    }
+
+    .btn-ghost {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-strong);
+    }
+    .btn-ghost:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+      font-weight: 600;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+    .btn-primary:hover { filter: brightness(1.1); box-shadow: 0 0 24px var(--accent-glow); }
+
+    .btn-danger {
+      background: var(--danger-dim);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+
+    /* Tags input */
+    .tags-input-wrap {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      cursor: text;
+      transition: all var(--transition);
+      min-height: 42px;
+      align-items: center;
+    }
+    .tags-input-wrap:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    .tag-chip {
+      display: flex; align-items: center; gap: 5px;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .tag-chip .remove-tag {
+      cursor: pointer;
+      opacity: 0.6;
+      line-height: 1;
+      font-size: 14px;
+      transition: opacity var(--transition);
+    }
+    .tag-chip .remove-tag:hover { opacity: 1; }
+
+    .tags-input-inner {
+      flex: 1;
+      min-width: 80px;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: var(--font-body);
+    }
+
+    /* Collection color picker */
+    .color-picker-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .color-dot {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all var(--transition);
+    }
+    .color-dot.selected { border-color: var(--text-primary); transform: scale(1.2); }
+
+    /* ===================== TOAST ===================== */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      font-size: 13.5px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-lg);
+      pointer-events: all;
+      animation: toastIn 0.3s cubic-bezier(0.34,1.3,0.64,1) both;
+      max-width: 320px;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(30px) scale(0.95); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .toast.out { animation: toastOut 0.25s ease forwards; }
+    @keyframes toastOut {
+      to { opacity: 0; transform: translateX(30px) scale(0.95); }
+    }
+
+    .toast-icon { font-size: 16px; flex-shrink: 0; }
+    .toast.success .toast-icon { color: var(--success); }
+    .toast.error .toast-icon { color: var(--danger); }
+    .toast.info .toast-icon { color: var(--info); }
+
+    /* ===================== SIDEBAR OVERLAY (mobile) ===================== */
+    .sidebar-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 99;
+    }
+
+    /* ===================== IMPORT/EXPORT BAR ===================== */
+    .io-bar {
+      display: flex;
+      gap: 8px;
+      padding: 8px 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    .io-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all var(--transition);
+      cursor: pointer;
+      color: var(--text-secondary);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+    }
+    .io-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
+
+    /* ===================== COLLECTION MODAL ===================== */
+    .new-coll-modal { max-width: 380px; }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
+      }
+      .sidebar.open {
+        transform: none;
+      }
+      .sidebar-backdrop { display: block; }
+      .main { margin-left: 0 !important; }
+      .links-grid { grid-template-columns: 1fr; }
+      .search-shortcut { display: none; }
+      .header-btn span { display: none; }
+      .header-btn { padding: 0 10px; }
+      .filter-bar { gap: 8px; }
+      .view-title { font-size: 18px; }
+    }
+
+    @media (max-width: 480px) {
+      .header { padding: 0 12px; gap: 8px; }
+      .content { padding: 12px; }
+      .filter-bar { padding: 8px 12px; }
+    }
+
+    /* ===================== MISC ===================== */
+    .hidden { display: none !important; }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 0;
+    }
+
+    .loading-shimmer {
+      background: linear-gradient(90deg,
+        var(--bg-secondary) 25%,
+        var(--bg-hover) 50%,
+        var(--bg-secondary) 75%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: var(--radius-sm);
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    .kbd {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-strong);
+      color: var(--text-muted);
+    }
+
+    /* Scrollbar in content */
+    .content::-webkit-scrollbar { width: 6px; }
+    .sidebar-nav::-webkit-scrollbar { width: 4px; }
+
+    /* Focus visible */
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* Drag ghost */
+    .drag-ghost {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0.85;
+      z-index: 9999;
+      transform: rotate(2deg) scale(0.95);
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     HTML STRUCTURE
+     ============================================================ -->
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer" aria-live="polite" aria-label="Notifications"></div>
+
+<!-- Sidebar Backdrop (mobile) -->
+<div class="sidebar-backdrop hidden" id="sidebarBackdrop" aria-hidden="true"></div>
+
+<!-- App Root -->
+<div class="app" id="app">
+
+  <!-- ========== SIDEBAR ========== -->
+  <aside class="sidebar collapsed" id="sidebar" role="navigation" aria-label="Main navigation">
+
+    <!-- Logo -->
+    <div class="sidebar-logo">
+      <div class="logo-mark" aria-hidden="true">A</div>
+      <div class="logo-text">
+        Ara Links
+        <span>Your link library</span>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="sidebar-nav" id="sidebarNav">
+
+      <div class="nav-section-label">Library</div>
+      <ul>
+        <li>
+          <div class="nav-item active" data-view="all" role="button" tabindex="0" aria-label="All links">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            All Links
+            <span class="nav-badge" id="badgeAll">0</span>
+          </div>
+        </li>
+        <li>
+          <div class="nav-item" data-view="favorites" role="button" tabindex="0" aria-label="Favorites">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Favorites
+            <span class="nav-badge" id="badgeFav">0</span>
+          </div>
+        </li>
+        <li>
+          <div class="nav-item" data-view="recent" role="button" tabindex="0" aria-label="Recently added">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Recent
+            <span class="nav-badge" id="badgeRecent">0</span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="divider" style="margin:10px 0;"></div>
+
+      <div class="nav-section-label">Collections</div>
+      <ul id="collectionsList"></ul>
+
+      <button class="add-collection-btn" id="addCollectionBtn" aria-label="Add new collection">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Collection
+      </button>
+
+    </nav>
+
+    <!-- Footer -->
+    <div class="sidebar-footer">
+      <div class="io-bar">
+        <button class="io-btn" id="exportBtn" title="Export links as JSON" aria-label="Export data">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export
+        </button>
+        <label class="io-btn" title="Import links from JSON" aria-label="Import data">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Import
+          <input type="file" id="importInput" accept=".json" class="hidden" />
+        </label>
+      </div>
+      <div class="theme-toggle" id="themeToggle" role="button" tabindex="0" aria-label="Toggle dark/light mode">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" id="themeIcon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <span id="themeLabel">Light mode</span>
+        <div class="toggle-switch" id="toggleSwitch" aria-hidden="true"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========== MAIN ========== -->
+  <main class="main full" id="mainContent">
+
+    <!-- Header -->
+    <header class="header" role="banner">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+
+      <div class="search-wrap" role="search">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input
+          type="search"
+          class="search-input"
+          id="searchInput"
+          placeholder="Search links, tags, descriptions…"
+          aria-label="Search links"
+          autocomplete="off"
+        />
+        <span class="search-shortcut" aria-hidden="true">Ctrl K</span>
+      </div>
+
+      <div class="header-actions">
+        <button class="header-btn" id="sortToggle" title="Sort links" aria-label="Sort options">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          <span>Sort</span>
+        </button>
+
+        <button class="header-btn primary" id="addLinkBtn" aria-label="Add new link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Add Link</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Filter / View Bar -->
+    <div class="filter-bar" id="filterBar">
+      <div>
+        <div class="view-title" id="viewTitle">All Links</div>
+      </div>
+      <div class="filter-tags" id="filterTags"></div>
+      <select class="sort-select" id="sortSelect" aria-label="Sort by">
+        <option value="date-desc">Newest first</option>
+        <option value="date-asc">Oldest first</option>
+        <option value="name-asc">Name A–Z</option>
+        <option value="name-desc">Name Z–A</option>
+      </select>
+    </div>
+
+    <!-- Content -->
+    <div class="content" id="content" role="main">
+      <div class="links-grid" id="linksGrid"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ========== MODAL: Add / Edit Link ========== -->
+<div class="modal-overlay" id="linkModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modalTitle">Add Link</h2>
+      <button class="modal-close" id="modalClose" aria-label="Close modal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field" id="fieldUrl">
+        <label for="inputUrl">URL <span style="color:var(--danger)">*</span></label>
+        <input type="url" id="inputUrl" placeholder="https://example.com" autocomplete="off" />
+        <span class="field-error" id="urlError">Please enter a valid URL</span>
+      </div>
+      <div class="field">
+        <label for="inputTitle">Title <span style="color:var(--danger)">*</span></label>
+        <input type="text" id="inputTitle" placeholder="Link title" autocomplete="off" />
+        <span class="field-error" id="titleError">Title is required</span>
+      </div>
+      <div class="field">
+        <label for="inputDesc">Description</label>
+        <textarea id="inputDesc" placeholder="Optional description or notes…"></textarea>
+      </div>
+      <div class="field">
+        <label>Tags</label>
+        <div class="tags-input-wrap" id="tagsWrap" role="group" aria-label="Tags">
+          <input type="text" class="tags-input-inner" id="tagsInput" placeholder="Add tag, press Enter" autocomplete="off" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="inputCollection">Collection</label>
+        <select id="inputCollection">
+          <option value="">— No collection —</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modalCancel">Cancel</button>
+      <button class="btn btn-primary" id="modalSave">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        Save Link
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: New Collection ========== -->
+<div class="modal-overlay" id="collectionModal" role="dialog" aria-modal="true" aria-labelledby="collModalTitle">
+  <div class="modal new-coll-modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="collModalTitle">New Collection</h2>
+      <button class="modal-close" id="collModalClose" aria-label="Close modal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label for="inputCollName">Name <span style="color:var(--danger)">*</span></label>
+        <input type="text" id="inputCollName" placeholder="e.g. Design Resources" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label>Color</label>
+        <div class="color-picker-row" id="colorPicker" role="group" aria-label="Choose color"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="collModalCancel">Cancel</button>
+      <button class="btn btn-primary" id="collModalSave">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden file input trigger (export) -->
+<a id="exportAnchor" class="hidden" download="ara-links.json"></a>
+
+
+<script>
+/* =========================================================
+   JAVASCRIPT — ARA LINKS
+   Pattern: IIFE module with clear internal sections
+   ========================================================= */
+(function () {
+  'use strict';
+
+  /* =====================================================
+     CONSTANTS & CONFIGURATION
+     ===================================================== */
+  const STORAGE_KEYS = {
+    links:       'araLinks_links',
+    collections: 'araLinks_collections',
+    theme:       'araLinks_theme',
+    sortOrder:   'araLinks_sort',
+  };
+
+  const TAG_COLORS = [
+    { color: 'var(--tag-1)', bg: 'var(--tag-1-bg)' },
+    { color: 'var(--tag-2)', bg: 'var(--tag-2-bg)' },
+    { color: 'var(--tag-3)', bg: 'var(--tag-3-bg)' },
+    { color: 'var(--tag-4)', bg: 'var(--tag-4-bg)' },
+    { color: 'var(--tag-5)', bg: 'var(--tag-5-bg)' },
+    { color: 'var(--tag-6)', bg: 'var(--tag-6-bg)' },
+  ];
+
+  const COLLECTION_COLORS = [
+    '#c8a96e','#6eb4c8','#6ec89a','#c86ec8',
+    '#e05c6a','#c8c86e','#8888dd','#dd8855'
+  ];
+
+  const DEBOUNCE_MS = 220;
+
+  /* =====================================================
+     STATE
+     ===================================================== */
+  const state = {
+    links: [],
+    collections: [],
+    view: 'all',           // 'all' | 'favorites' | 'recent' | collectionId
+    searchQuery: '',
+    activeTag: null,
+    sortOrder: 'date-desc',
+    editingId: null,       // link id being edited
+    tagColorMap: {},       // tag -> color index
+    dragSrcId: null,
+  };
+
+  /* =====================================================
+     UTILITIES
+     ===================================================== */
+  const $ = id => document.getElementById(id);
+  const qs = (sel, ctx = document) => ctx.querySelector(sel);
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+
+  function debounce(fn, ms) {
+    let t;
+    return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+  }
+
+  function formatDate(ts) {
+    const d = new Date(ts);
+    const now = new Date();
+    const diff = now - d;
+    if (diff < 60_000) return 'just now';
+    if (diff < 3_600_000) return Math.floor(diff/60_000) + 'm ago';
+    if (diff < 86_400_000) return Math.floor(diff/3_600_000) + 'h ago';
+    if (diff < 7*86_400_000) return Math.floor(diff/86_400_000) + 'd ago';
+    return d.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+  }
+
+  function extractDomain(url) {
+    try { return new URL(url).hostname.replace('www.',''); }
+    catch { return url; }
+  }
+
+  function isValidUrl(s) {
+    try { const u = new URL(s); return u.protocol === 'http:' || u.protocol === 'https:'; }
+    catch { return false; }
+  }
+
+  function getFavicon(url) {
+    try {
+      const domain = new URL(url).origin;
+      return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+    } catch { return null; }
+  }
+
+  function getTagColorIndex(tag) {
+    if (state.tagColorMap[tag] === undefined) {
+      const keys = Object.keys(state.tagColorMap);
+      state.tagColorMap[tag] = keys.length % TAG_COLORS.length;
+    }
+    return state.tagColorMap[tag];
+  }
+
+  function getTagStyle(tag) {
+    const idx = getTagColorIndex(tag);
+    const c = TAG_COLORS[idx];
+    return `color:${c.color};background:${c.bg};`;
+  }
+
+  function svgIcon(d, size=16, extra='') {
+    return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" ${extra}>${d}</svg>`;
+  }
+
+  /* =====================================================
+     STORAGE
+     ===================================================== */
+  const Storage = {
+    load() {
+      state.links       = JSON.parse(localStorage.getItem(STORAGE_KEYS.links) || '[]');
+      state.collections = JSON.parse(localStorage.getItem(STORAGE_KEYS.collections) || '[]');
+      state.sortOrder   = localStorage.getItem(STORAGE_KEYS.sortOrder) || 'date-desc';
+      // Rebuild tag color map from existing tags
+      state.links.forEach(l => {
+        (l.tags || []).forEach(t => getTagColorIndex(t));
+      });
+    },
+    save() {
+      localStorage.setItem(STORAGE_KEYS.links,       JSON.stringify(state.links));
+      localStorage.setItem(STORAGE_KEYS.collections, JSON.stringify(state.collections));
+      localStorage.setItem(STORAGE_KEYS.sortOrder,   state.sortOrder);
+    },
+    saveTheme(theme) {
+      localStorage.setItem(STORAGE_KEYS.theme, theme);
+    },
+    loadTheme() {
+      return localStorage.getItem(STORAGE_KEYS.theme);
+    }
+  };
+
+  /* =====================================================
+     THEME
+     ===================================================== */
+  const Theme = {
+    current: 'dark',
+    init() {
+      const saved = Storage.loadTheme();
+      if (saved) {
+        this.set(saved, false);
+      } else {
+        const pref = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        this.set(pref, false);
+      }
+    },
+    set(theme, save=true) {
+      this.current = theme;
+      document.documentElement.setAttribute('data-theme', theme);
+      const isDark = theme === 'dark';
+      $('toggleSwitch').classList.toggle('on', isDark);
+      $('themeLabel').textContent = isDark ? 'Light mode' : 'Dark mode';
+      const icon = $('themeIcon');
+      if (isDark) {
+        icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+      } else {
+        icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+      }
+      if (save) Storage.saveTheme(theme);
+    },
+    toggle() {
+      this.set(this.current === 'dark' ? 'light' : 'dark');
+    }
+  };
+
+  /* =====================================================
+     TOAST NOTIFICATIONS
+     ===================================================== */
+  const Toast = {
+    show(msg, type='info', duration=3000) {
+      const icons = {
+        success: '<polyline points="20 6 9 17 4 12"/>',
+        error: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+        info: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
+      };
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      el.setAttribute('role', 'alert');
+      el.innerHTML = `<span class="toast-icon">${svgIcon(icons[type] || icons.info, 16)}</span>${escHtml(msg)}`;
+      $('toastContainer').appendChild(el);
+      setTimeout(() => {
+        el.classList.add('out');
+        el.addEventListener('animationend', () => el.remove());
+      }, duration);
+    }
+  };
+
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+
+  /* =====================================================
+     MODAL SYSTEM
+     ===================================================== */
+  const Modal = {
+    open(id) {
+      const el = $(id);
+      el.classList.add('open');
+      el.querySelector('.modal').setAttribute('role','dialog');
+      const first = el.querySelector('input,textarea,button');
+      if (first) setTimeout(() => first.focus(), 50);
+      document.addEventListener('keydown', Modal._esc);
+    },
+    close(id) {
+      const el = $(id);
+      el.classList.remove('open');
+      document.removeEventListener('keydown', Modal._esc);
+    },
+    _esc(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+      }
+    }
+  };
+
+  /* =====================================================
+     SIDEBAR
+     ===================================================== */
+  const Sidebar = {
+    isOpen: false,
+    init() {
+      const sidebar = $('sidebar');
+      const main = $('mainContent');
+      const isMobile = () => window.innerWidth <= 768;
+
+      this._setup(sidebar, main, isMobile);
+
+      window.addEventListener('resize', debounce(() => {
+        this._setup(sidebar, main, isMobile);
+      }, 200));
+
+      $('sidebarBackdrop').addEventListener('click', () => this.close(sidebar, main));
+    },
+    _setup(sidebar, main, isMobile) {
+      if (!isMobile()) {
+        sidebar.classList.remove('collapsed');
+        sidebar.classList.remove('open');
+        main.classList.remove('full');
+        main.style.marginLeft = 'var(--sidebar-w)';
+        $('sidebarBackdrop').classList.add('hidden');
+        this.isOpen = true;
+      } else {
+        sidebar.classList.remove('open');
+        main.style.marginLeft = '';
+        main.classList.add('full');
+        $('sidebarBackdrop').classList.add('hidden');
+        this.isOpen = false;
+      }
+    },
+    toggle() {
+      const sidebar = $('sidebar');
+      const main = $('mainContent');
+      const isMobile = () => window.innerWidth <= 768;
+      if (isMobile()) {
+        this.isOpen = !this.isOpen;
+        sidebar.classList.toggle('open', this.isOpen);
+        $('sidebarBackdrop').classList.toggle('hidden', !this.isOpen);
+        $('sidebarToggle').setAttribute('aria-expanded', this.isOpen);
+      } else {
+        this.isOpen = !this.isOpen;
+        sidebar.classList.toggle('collapsed', !this.isOpen);
+        main.style.marginLeft = this.isOpen ? 'var(--sidebar-w)' : '0';
+      }
+    },
+    close(sidebar, main) {
+      this.isOpen = false;
+      sidebar.classList.remove('open');
+      $('sidebarBackdrop').classList.add('hidden');
+      $('sidebarToggle').setAttribute('aria-expanded', 'false');
+    }
+  };
+
+  /* =====================================================
+     COLLECTIONS
+     ===================================================== */
+  const Collections = {
+    render() {
+      const list = $('collectionsList');
+      list.innerHTML = '';
+
+      // Populate modal select
+      const sel = $('inputCollection');
+      const prev = sel.value;
+      sel.innerHTML = '<option value="">— No collection —</option>';
+
+      state.collections.forEach(c => {
+        // sidebar item
+        const li = document.createElement('li');
+        const isActive = state.view === c.id;
+        li.innerHTML = `
+          <div class="collection-item ${isActive ? 'active' : ''}" data-coll="${c.id}" role="button" tabindex="0" aria-label="Collection: ${escHtml(c.name)}">
+            <span class="collection-dot" style="background:${c.color}" aria-hidden="true"></span>
+            <span class="collection-name">${escHtml(c.name)}</span>
+            <span class="nav-badge">${state.links.filter(l => l.collection === c.id).length}</span>
+            <span class="collection-actions" role="group">
+              <button class="collection-action-btn del" data-coll-del="${c.id}" aria-label="Delete collection ${escHtml(c.name)}" title="Delete">
+                ${svgIcon('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>', 13)}
+              </button>
+            </span>
+          </div>`;
+        list.appendChild(li);
+
+        // modal option
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name;
+        sel.appendChild(opt);
+      });
+
+      // Restore selection
+      if (prev) sel.value = prev;
+
+      // Events: click collection
+      list.querySelectorAll('[data-coll]').forEach(el => {
+        el.addEventListener('click', e => {
+          if (e.target.closest('[data-coll-del]')) return;
+          Views.set(el.dataset.coll);
+        });
+        el.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); Views.set(el.dataset.coll); }
+        });
+      });
+
+      list.querySelectorAll('[data-coll-del]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          Collections.delete(btn.dataset.collDel);
+        });
+      });
+    },
+
+    add(name, color) {
+      const c = { id: uid(), name, color, createdAt: Date.now() };
+      state.collections.push(c);
+      Storage.save();
+      this.render();
+      Toast.show(`Collection "${name}" created`, 'success');
+    },
+
+    delete(id) {
+      state.collections = state.collections.filter(c => c.id !== id);
+      // unassign links
+      state.links.forEach(l => { if (l.collection === id) l.collection = null; });
+      Storage.save();
+      if (state.view === id) Views.set('all');
+      else { this.render(); renderLinks(); }
+    },
+
+    getById(id) { return state.collections.find(c => c.id === id); }
+  };
+
+  /* =====================================================
+     VIEWS / NAVIGATION
+     ===================================================== */
+  const VIEWS = {
+    all:       { label: 'All Links',  filter: () => true },
+    favorites: { label: 'Favorites',  filter: l => l.favorite },
+    recent:    { label: 'Recent',     filter: (l, now) => (now - l.createdAt) < 7*86400000 },
+  };
+
+  const Views = {
+    set(viewId) {
+      state.view = viewId;
+      state.activeTag = null;
+      state.searchQuery = '';
+      $('searchInput').value = '';
+
+      // Update nav active states
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.toggle('active', el.dataset.view === viewId);
+      });
+      Collections.render();
+
+      // Title
+      if (VIEWS[viewId]) {
+        $('viewTitle').textContent = VIEWS[viewId].label;
+      } else {
+        const c = Collections.getById(viewId);
+        $('viewTitle').textContent = c ? c.name : 'Links';
+      }
+
+      renderLinks();
+      updateBadges();
+
+      // Mobile: close sidebar
+      if (window.innerWidth <= 768) Sidebar.close($('sidebar'), $('mainContent'));
+    }
+  };
+
+  /* =====================================================
+     TAGS SYSTEM
+     ===================================================== */
+  let pendingTags = [];
+
+  const TagsInput = {
+    init() {
+      const input = $('tagsInput');
+      const wrap = $('tagsWrap');
+
+      wrap.addEventListener('click', () => input.focus());
+
+      input.addEventListener('keydown', e => {
+        if ((e.key === 'Enter' || e.key === ',') && input.value.trim()) {
+          e.preventDefault();
+          this.add(input.value.trim());
+          input.value = '';
+        } else if (e.key === 'Backspace' && !input.value && pendingTags.length) {
+          this.remove(pendingTags[pendingTags.length - 1]);
+        }
+      });
+
+      input.addEventListener('blur', () => {
+        if (input.value.trim()) { this.add(input.value.trim()); input.value = ''; }
+      });
+    },
+
+    add(tag) {
+      tag = tag.toLowerCase().replace(/[^a-z0-9-_]/g,'');
+      if (!tag || pendingTags.includes(tag)) return;
+      pendingTags.push(tag);
+      getTagColorIndex(tag);
+      this.render();
+    },
+
+    remove(tag) {
+      pendingTags = pendingTags.filter(t => t !== tag);
+      this.render();
+    },
+
+    render() {
+      const wrap = $('tagsWrap');
+      // Remove existing chips
+      wrap.querySelectorAll('.tag-chip').forEach(el => el.remove());
+      const input = $('tagsInput');
+      pendingTags.forEach(tag => {
+        const chip = document.createElement('span');
+        chip.className = 'tag-chip';
+        chip.style.cssText = getTagStyle(tag);
+        chip.innerHTML = `${escHtml(tag)}<span class="remove-tag" data-tag="${escHtml(tag)}" role="button" aria-label="Remove tag ${escHtml(tag)}">×</span>`;
+        chip.querySelector('.remove-tag').addEventListener('click', () => TagsInput.remove(tag));
+        wrap.insertBefore(chip, input);
+      });
+    },
+
+    load(tags) {
+      pendingTags = [...(tags||[])];
+      pendingTags.forEach(t => getTagColorIndex(t));
+      this.render();
+    },
+
+    clear() {
+      pendingTags = [];
+      $('tagsWrap').querySelectorAll('.tag-chip').forEach(el => el.remove());
+      $('tagsInput').value = '';
+    },
+
+    get() { return [...pendingTags]; }
+  };
+
+  /* =====================================================
+     LINK CRUD
+     ===================================================== */
+  const Links = {
+    add(data) {
+      const link = {
+        id: uid(),
+        title: data.title.trim(),
+        url: data.url.trim(),
+        description: data.description.trim(),
+        tags: data.tags,
+        collection: data.collection || null,
+        favorite: false,
+        createdAt: Date.now(),
+        order: state.links.length,
+      };
+      state.links.unshift(link);
+      Storage.save();
+      renderLinks();
+      updateBadges();
+      Toast.show('Link saved!', 'success');
+    },
+
+    update(id, data) {
+      const idx = state.links.findIndex(l => l.id === id);
+      if (idx === -1) return;
+      Object.assign(state.links[idx], {
+        title: data.title.trim(),
+        url: data.url.trim(),
+        description: data.description.trim(),
+        tags: data.tags,
+        collection: data.collection || null,
+      });
+      Storage.save();
+      renderLinks();
+      Toast.show('Link updated', 'success');
+    },
+
+    delete(id) {
+      state.links = state.links.filter(l => l.id !== id);
+      Storage.save();
+      renderLinks();
+      updateBadges();
+      Toast.show('Link removed', 'info');
+    },
+
+    toggleFavorite(id) {
+      const l = state.links.find(l => l.id === id);
+      if (!l) return;
+      l.favorite = !l.favorite;
+      Storage.save();
+      updateBadges();
+      // Update card star button only
+      const btn = document.querySelector(`.card-action.fav[data-id="${id}"]`);
+      if (btn) {
+        btn.classList.toggle('on', l.favorite);
+        const title = l.favorite ? 'Remove from favorites' : 'Add to favorites';
+        btn.setAttribute('aria-label', title);
+        btn.title = title;
+        btn.innerHTML = svgIcon(
+          l.favorite
+            ? '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="currentColor"/>'
+            : '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+          15
+        );
+      }
+      Toast.show(l.favorite ? 'Added to favorites ★' : 'Removed from favorites', 'info');
+    },
+
+    reorder(fromId, toId) {
+      const fromIdx = state.links.findIndex(l => l.id === fromId);
+      const toIdx   = state.links.findIndex(l => l.id === toId);
+      if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return;
+      const [item] = state.links.splice(fromIdx, 1);
+      state.links.splice(toIdx, 0, item);
+      Storage.save();
+    }
+  };
+
+  /* =====================================================
+     FILTERING & SORTING
+     ===================================================== */
+  function getFilteredLinks() {
+    const now = Date.now();
+    const q = state.searchQuery.toLowerCase();
+
+    let links = state.links.filter(l => {
+      // View filter
+      if (state.view === 'all') {
+        // show all
+      } else if (VIEWS[state.view]) {
+        if (!VIEWS[state.view].filter(l, now)) return false;
+      } else {
+        // collection
+        if (l.collection !== state.view) return false;
+      }
+
+      // Tag filter
+      if (state.activeTag && !(l.tags||[]).includes(state.activeTag)) return false;
+
+      // Search
+      if (q) {
+        const inTitle = (l.title||'').toLowerCase().includes(q);
+        const inUrl   = (l.url||'').toLowerCase().includes(q);
+        const inDesc  = (l.description||'').toLowerCase().includes(q);
+        const inTags  = (l.tags||[]).some(t => t.includes(q));
+        if (!inTitle && !inUrl && !inDesc && !inTags) return false;
+      }
+
+      return true;
+    });
+
+    // Sort
+    links = [...links];
+    switch (state.sortOrder) {
+      case 'date-asc':   links.sort((a,b) => a.createdAt - b.createdAt); break;
+      case 'date-desc':  links.sort((a,b) => b.createdAt - a.createdAt); break;
+      case 'name-asc':   links.sort((a,b) => a.title.localeCompare(b.title)); break;
+      case 'name-desc':  links.sort((a,b) => b.title.localeCompare(a.title)); break;
+    }
+
+    return links;
+  }
+
+  /* =====================================================
+     RENDER LINKS
+     ===================================================== */
+  function renderLinks() {
+    const grid = $('linksGrid');
+    const links = getFilteredLinks();
+
+    grid.innerHTML = '';
+
+    if (!links.length) {
+      renderEmpty(grid);
+      return;
+    }
+
+    // Lazy render: use IntersectionObserver for batch rendering
+    const fragment = document.createDocumentFragment();
+    links.forEach((link, i) => {
+      const card = buildCard(link, i);
+      fragment.appendChild(card);
+    });
+    grid.appendChild(fragment);
+
+    renderTagFilters(links);
+  }
+
+  function buildCard(link, animIdx) {
+    const card = document.createElement('div');
+    card.className = 'link-card';
+    card.dataset.id = link.id;
+    card.setAttribute('draggable', 'true');
+    card.setAttribute('aria-label', `Link: ${link.title}`);
+    card.style.animationDelay = `${Math.min(animIdx * 30, 300)}ms`;
+
+    const domain = extractDomain(link.url);
+    const faviconUrl = getFavicon(link.url);
+    const isFav = link.favorite;
+    const coll = link.collection ? Collections.getById(link.collection) : null;
+
+    const tagsHtml = (link.tags||[]).map(t =>
+      `<span class="tag-pill" style="${getTagStyle(t)}" data-tag="${escHtml(t)}" role="button" tabindex="0" aria-label="Filter by tag: ${escHtml(t)}">${escHtml(t)}</span>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-favicon">
+          ${faviconUrl
+            ? `<img src="${escHtml(faviconUrl)}" alt="" loading="lazy" onerror="this.parentElement.innerHTML='${getDomainInitial(domain)}'"/>`
+            : `<span>${getDomainInitial(domain)}</span>`
+          }
+        </div>
+        <div class="card-info">
+          <div class="card-title" role="button" tabindex="0" title="${escHtml(link.title)}" data-open="${link.id}">${escHtml(link.title)}</div>
+          <div class="card-url">${escHtml(domain)}</div>
+        </div>
+      </div>
+      ${link.description ? `<div class="card-desc">${escHtml(link.description)}</div>` : ''}
+      ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ''}
+      ${coll ? `<div style="font-size:11px;color:${coll.color};display:flex;align-items:center;gap:5px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:${coll.color};display:inline-block;"></span>
+        ${escHtml(coll.name)}
+      </div>` : ''}
+      <div class="card-footer">
+        <span class="card-date">${formatDate(link.createdAt)}</span>
+        <button class="card-action fav ${isFav ? 'on' : ''}" data-id="${link.id}" aria-label="${isFav ? 'Remove from favorites' : 'Add to favorites'}" title="${isFav ? 'Remove from favorites' : 'Add to favorites'}">
+          ${svgIcon(isFav
+            ? '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="currentColor"/>'
+            : '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'
+            , 15)}
+        </button>
+        <button class="card-action" data-copy="${link.url}" aria-label="Copy link" title="Copy link">
+          ${svgIcon('<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',15)}
+        </button>
+        <button class="card-action" data-edit="${link.id}" aria-label="Edit link" title="Edit">
+          ${svgIcon('<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>',15)}
+        </button>
+        <button class="card-action" data-open-link="${link.url}" aria-label="Open link in new tab" title="Open">
+          ${svgIcon('<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>',15)}
+        </button>
+        <button class="card-action delete" data-delete="${link.id}" aria-label="Delete link" title="Delete">
+          ${svgIcon('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>',15)}
+        </button>
+      </div>`;
+
+    // --- Card events ---
+    // Open link on title click
+    card.querySelector('[data-open]').addEventListener('click', () => window.open(link.url, '_blank', 'noopener'));
+    card.querySelector('[data-open]').addEventListener('keydown', e => {
+      if (e.key === 'Enter') window.open(link.url, '_blank', 'noopener');
+    });
+
+    // Open link button
+    card.querySelector('[data-open-link]').addEventListener('click', () => {
+      window.open(link.url, '_blank', 'noopener,noreferrer');
+    });
+
+    // Favorite
+    card.querySelector('.card-action.fav').addEventListener('click', () => Links.toggleFavorite(link.id));
+
+    // Copy
+    card.querySelector('[data-copy]').addEventListener('click', () => {
+      navigator.clipboard.writeText(link.url).then(() => Toast.show('Link copied!', 'success'))
+        .catch(() => Toast.show('Copy failed', 'error'));
+    });
+
+    // Edit
+    card.querySelector('[data-edit]').addEventListener('click', () => LinkModal.openEdit(link.id));
+
+    // Delete
+    card.querySelector('[data-delete]').addEventListener('click', () => {
+      if (confirm(`Delete "${link.title}"?`)) Links.delete(link.id);
+    });
+
+    // Tag filter
+    card.querySelectorAll('[data-tag]').forEach(tag => {
+      tag.addEventListener('click', e => { e.stopPropagation(); filterByTag(tag.dataset.tag); });
+      tag.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); filterByTag(tag.dataset.tag); }
+      });
+    });
+
+    // Drag & Drop
+    card.addEventListener('dragstart', e => {
+      state.dragSrcId = link.id;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      document.querySelectorAll('.link-card.drag-over').forEach(c => c.classList.remove('drag-over'));
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      card.classList.add('drag-over');
+    });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      card.classList.remove('drag-over');
+      if (state.dragSrcId && state.dragSrcId !== link.id) {
+        Links.reorder(state.dragSrcId, link.id);
+        renderLinks();
+      }
+    });
+
+    return card;
+  }
+
+  function getDomainInitial(domain) {
+    return domain ? domain.charAt(0).toUpperCase() : '🔗';
+  }
+
+  /* =====================================================
+     TAG FILTER BAR
+     ===================================================== */
+  function renderTagFilters(links) {
+    const allTags = new Set();
+    links.forEach(l => (l.tags||[]).forEach(t => allTags.add(t)));
+
+    const bar = $('filterTags');
+    bar.innerHTML = '';
+
+    if (allTags.size === 0) return;
+
+    allTags.forEach(tag => {
+      const btn = document.createElement('button');
+      btn.className = `filter-tag ${state.activeTag === tag ? 'active' : ''}`;
+      btn.textContent = tag;
+      btn.setAttribute('aria-label', `Filter by tag: ${tag}`);
+      btn.setAttribute('aria-pressed', state.activeTag === tag ? 'true' : 'false');
+      btn.addEventListener('click', () => filterByTag(tag));
+      bar.appendChild(btn);
+    });
+  }
+
+  function filterByTag(tag) {
+    state.activeTag = state.activeTag === tag ? null : tag;
+    renderLinks();
+  }
+
+  /* =====================================================
+     EMPTY STATE
+     ===================================================== */
+  function renderEmpty(grid) {
+    $('filterTags').innerHTML = '';
+    const emojis = { all:'🔗', favorites:'⭐', recent:'🕐' };
+    const emoji = emojis[state.view] || '📁';
+    const isSearch = state.searchQuery || state.activeTag;
+
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        <div class="empty-icon">${isSearch ? '🔍' : emoji}</div>
+        <div class="empty-title">${isSearch ? 'No results found' : 'Nothing here yet'}</div>
+        <p class="empty-desc">${isSearch
+          ? 'Try a different search term or clear your filters.'
+          : 'Start building your link library. Save your first link to get going.'
+        }</p>
+        ${!isSearch ? `<button class="empty-cta" id="emptyCta">+ Add your first link</button>` : ''}
+      </div>`;
+
+    const cta = $('emptyCta');
+    if (cta) cta.addEventListener('click', () => LinkModal.openAdd());
+  }
+
+  /* =====================================================
+     BADGES
+     ===================================================== */
+  function updateBadges() {
+    const now = Date.now();
+    $('badgeAll').textContent = state.links.length;
+    $('badgeFav').textContent = state.links.filter(l => l.favorite).length;
+    $('badgeRecent').textContent = state.links.filter(l => now - l.createdAt < 7*86400000).length;
+  }
+
+  /* =====================================================
+     LINK MODAL
+     ===================================================== */
+  const LinkModal = {
+    openAdd() {
+      state.editingId = null;
+      $('modalTitle').textContent = 'Add Link';
+      $('modalSave').innerHTML = `${svgIcon('<polyline points="20 6 9 17 4 12"/>',14)} Save Link`;
+      this._clearForm();
+      Collections.render(); // refresh select
+      Modal.open('linkModal');
+      $('inputUrl').focus();
+    },
+
+    openEdit(id) {
+      const link = state.links.find(l => l.id === id);
+      if (!link) return;
+      state.editingId = id;
+      $('modalTitle').textContent = 'Edit Link';
+      $('modalSave').innerHTML = `${svgIcon('<polyline points="20 6 9 17 4 12"/>',14)} Update Link`;
+      $('inputUrl').value = link.url;
+      $('inputTitle').value = link.title;
+      $('inputDesc').value = link.description || '';
+      $('inputCollection').value = link.collection || '';
+      TagsInput.load(link.tags);
+      Collections.render();
+      $('inputCollection').value = link.collection || '';
+      Modal.open('linkModal');
+      $('inputTitle').focus();
+    },
+
+    _clearForm() {
+      $('inputUrl').value = '';
+      $('inputTitle').value = '';
+      $('inputDesc').value = '';
+      $('inputCollection').value = '';
+      TagsInput.clear();
+      // Clear errors
+      $('fieldUrl').classList.remove('has-error');
+      document.querySelector('.field:nth-child(2)').classList.remove('has-error');
+    },
+
+    save() {
+      // Validate
+      let valid = true;
+      const url = $('inputUrl').value.trim();
+      const title = $('inputTitle').value.trim();
+
+      $('fieldUrl').classList.toggle('has-error', !isValidUrl(url));
+      if (!isValidUrl(url)) valid = false;
+
+      const titleField = document.querySelector('#linkModal .field:nth-child(2)');
+      titleField.classList.toggle('has-error', !title);
+      if (!title) valid = false;
+
+      if (!valid) {
+        Toast.show('Please fix the errors above', 'error');
+        return;
+      }
+
+      const data = {
+        url,
+        title,
+        description: $('inputDesc').value,
+        tags: TagsInput.get(),
+        collection: $('inputCollection').value,
+      };
+
+      if (state.editingId) {
+        Links.update(state.editingId, data);
+      } else {
+        Links.add(data);
+      }
+
+      Modal.close('linkModal');
+    }
+  };
+
+  /* =====================================================
+     COLLECTION MODAL
+     ===================================================== */
+  const CollModal = {
+    selectedColor: COLLECTION_COLORS[0],
+
+    init() {
+      // Build color picker
+      const picker = $('colorPicker');
+      COLLECTION_COLORS.forEach((col, i) => {
+        const dot = document.createElement('div');
+        dot.className = `color-dot ${i===0 ? 'selected' : ''}`;
+        dot.style.background = col;
+        dot.setAttribute('role', 'radio');
+        dot.setAttribute('aria-label', `Color: ${col}`);
+        dot.setAttribute('tabindex', '0');
+        dot.addEventListener('click', () => this.selectColor(col, dot));
+        dot.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.selectColor(col, dot); }
+        });
+        picker.appendChild(dot);
+      });
+    },
+
+    selectColor(col, dot) {
+      this.selectedColor = col;
+      $('colorPicker').querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+      dot.classList.add('selected');
+    },
+
+    open() {
+      $('inputCollName').value = '';
+      this.selectedColor = COLLECTION_COLORS[0];
+      $('colorPicker').querySelectorAll('.color-dot').forEach((d,i) => d.classList.toggle('selected', i===0));
+      Modal.open('collectionModal');
+      $('inputCollName').focus();
+    },
+
+    save() {
+      const name = $('inputCollName').value.trim();
+      if (!name) { Toast.show('Collection name required', 'error'); return; }
+      Collections.add(name, this.selectedColor);
+      Modal.close('collectionModal');
+    }
+  };
+
+  /* =====================================================
+     IMPORT / EXPORT
+     ===================================================== */
+  const IO = {
+    export() {
+      const data = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        links: state.links,
+        collections: state.collections,
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = $('exportAnchor');
+      a.href = url;
+      a.download = `ara-links-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      Toast.show(`Exported ${state.links.length} links`, 'success');
+    },
+
+    import(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (!Array.isArray(data.links)) throw new Error('Invalid format');
+          const addedLinks = data.links.filter(l => !state.links.find(x => x.id === l.id));
+          const addedColls = (data.collections||[]).filter(c => !state.collections.find(x => x.id === c.id));
+          state.links.push(...addedLinks);
+          state.collections.push(...addedColls);
+          // Rebuild tag colors
+          state.links.forEach(l => (l.tags||[]).forEach(t => getTagColorIndex(t)));
+          Storage.save();
+          Collections.render();
+          renderLinks();
+          updateBadges();
+          Toast.show(`Imported ${addedLinks.length} links`, 'success');
+        } catch {
+          Toast.show('Invalid JSON file', 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  /* =====================================================
+     KEYBOARD SHORTCUTS
+     ===================================================== */
+  function initKeyboard() {
+    document.addEventListener('keydown', e => {
+      const tag = document.activeElement.tagName;
+      const inInput = ['INPUT','TEXTAREA','SELECT'].includes(tag);
+
+      // Ctrl/Cmd+K → focus search
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        $('searchInput').focus();
+        $('searchInput').select();
+        return;
+      }
+
+      // Ctrl/Cmd+N → new link
+      if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        e.preventDefault();
+        LinkModal.openAdd();
+        return;
+      }
+
+      // Escape → close modals, clear search
+      if (e.key === 'Escape' && !inInput) {
+        state.activeTag = null;
+        state.searchQuery = '';
+        $('searchInput').value = '';
+        renderLinks();
+      }
+    });
+  }
+
+  /* =====================================================
+     EVENT LISTENERS
+     ===================================================== */
+  function initEvents() {
+    // Sidebar toggle
+    $('sidebarToggle').addEventListener('click', () => Sidebar.toggle());
+
+    // Nav items
+    document.querySelectorAll('.nav-item[data-view]').forEach(el => {
+      el.addEventListener('click', () => Views.set(el.dataset.view));
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); Views.set(el.dataset.view); }
+      });
+    });
+
+    // Search
+    $('searchInput').addEventListener('input', debounce(e => {
+      state.searchQuery = e.target.value.trim();
+      state.activeTag = null;
+      renderLinks();
+    }, DEBOUNCE_MS));
+
+    // Sort
+    $('sortSelect').value = state.sortOrder;
+    $('sortSelect').addEventListener('change', e => {
+      state.sortOrder = e.target.value;
+      Storage.save();
+      renderLinks();
+    });
+
+    $('sortToggle').addEventListener('click', () => $('sortSelect').focus());
+
+    // Add Link
+    $('addLinkBtn').addEventListener('click', () => LinkModal.openAdd());
+
+    // Modal: Save / Cancel / Close
+    $('modalSave').addEventListener('click', () => LinkModal.save());
+    $('modalCancel').addEventListener('click', () => Modal.close('linkModal'));
+    $('modalClose').addEventListener('click', () => Modal.close('linkModal'));
+
+    // Modal: Click overlay to close
+    $('linkModal').addEventListener('click', e => {
+      if (e.target === $('linkModal')) Modal.close('linkModal');
+    });
+    $('collectionModal').addEventListener('click', e => {
+      if (e.target === $('collectionModal')) Modal.close('collectionModal');
+    });
+
+    // Collection modal
+    $('addCollectionBtn').addEventListener('click', () => CollModal.open());
+    $('collModalSave').addEventListener('click', () => CollModal.save());
+    $('collModalCancel').addEventListener('click', () => Modal.close('collectionModal'));
+    $('collModalClose').addEventListener('click', () => Modal.close('collectionModal'));
+
+    // Coll name: Enter to save
+    $('inputCollName').addEventListener('keydown', e => {
+      if (e.key === 'Enter') CollModal.save();
+    });
+
+    // URL blur: auto-fill title from domain
+    $('inputUrl').addEventListener('blur', () => {
+      const url = $('inputUrl').value.trim();
+      if (url && isValidUrl(url) && !$('inputTitle').value.trim()) {
+        $('inputTitle').value = extractDomain(url);
+      }
+    });
+
+    // Theme toggle
+    $('themeToggle').addEventListener('click', () => Theme.toggle());
+    $('themeToggle').addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); Theme.toggle(); }
+    });
+
+    // Export
+    $('exportBtn').addEventListener('click', () => IO.export());
+
+    // Import
+    $('importInput').addEventListener('change', e => {
+      IO.import(e.target.files[0]);
+      e.target.value = ''; // reset
+    });
+
+    // URL field: Enter → next field
+    $('inputUrl').addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); $('inputTitle').focus(); }
+    });
+
+    // Modal: Ctrl+Enter to save
+    $('linkModal').addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') LinkModal.save();
+    });
+  }
+
+  /* =====================================================
+     PWA (Manifest inline)
+     ===================================================== */
+  function initPWA() {
+    const manifest = {
+      name: "Ara Links",
+      short_name: "Ara",
+      description: "Your personal link library",
+      start_url: "/",
+      display: "standalone",
+      background_color: "#0f0f13",
+      theme_color: "#c8a96e",
+      icons: [{ src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23c8a96e'/><text x='50' y='72' font-size='60' text-anchor='middle' fill='%230f0f13' font-family='serif' font-weight='bold'>A</text></svg>", sizes: "192x192", type: "image/svg+xml" }]
+    };
+    const blob = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
+    $('manifest-link').href = URL.createObjectURL(blob);
+  }
+
+  /* =====================================================
+     DEMO DATA (first launch)
+     ===================================================== */
+  function seedDemoData() {
+    if (state.links.length > 0) return; // don't seed if already has data
+
+    const demoColls = [
+      { id: 'coll-design', name: 'Design', color: '#6eb4c8', createdAt: Date.now() },
+      { id: 'coll-dev',    name: 'Development', color: '#6ec89a', createdAt: Date.now() },
+    ];
+
+    const demoLinks = [
+      { id: uid(), title: 'Raindrop.io — All-in-one bookmark manager', url: 'https://raindrop.io', description: 'Save, organize and discover the best of the internet.', tags: ['productivity','tools'], collection: 'coll-dev', favorite: false, createdAt: Date.now() - 86400000*5, order: 0 },
+      { id: uid(), title: 'Dribbble — Discover the world\'s top designers', url: 'https://dribbble.com', description: 'Explore work from talented designers across the globe.', tags: ['design','inspiration'], collection: 'coll-design', favorite: true, createdAt: Date.now() - 86400000*3, order: 1 },
+      { id: uid(), title: 'MDN Web Docs', url: 'https://developer.mozilla.org', description: 'The best resource for web developers, by Mozilla.', tags: ['dev','reference'], collection: 'coll-dev', favorite: true, createdAt: Date.now() - 86400000*2, order: 2 },
+      { id: uid(), title: 'Figma — Collaborative interface design tool', url: 'https://figma.com', description: 'Design, prototype and collaborate all in one place.', tags: ['design','tools'], collection: 'coll-design', favorite: false, createdAt: Date.now() - 86400000, order: 3 },
+      { id: uid(), title: 'GitHub — Where the world builds software', url: 'https://github.com', description: 'Millions of developers and companies build on GitHub.', tags: ['dev','open-source'], collection: 'coll-dev', favorite: false, createdAt: Date.now() - 3600000, order: 4 },
+    ];
+
+    state.collections = demoColls;
+    state.links = demoLinks;
+    demoLinks.forEach(l => (l.tags||[]).forEach(t => getTagColorIndex(t)));
+    Storage.save();
+  }
+
+  /* =====================================================
+     INIT
+     ===================================================== */
+  function init() {
+    Storage.load();
+    seedDemoData();
+
+    Theme.init();
+    Sidebar.init();
+    TagsInput.init();
+    CollModal.init();
+    initEvents();
+    initKeyboard();
+    initPWA();
+
+    Collections.render();
+    renderLinks();
+    updateBadges();
+
+    // Open sidebar on desktop after short delay for a nice entrance
+    if (window.innerWidth > 768) {
+      setTimeout(() => {
+        $('sidebar').classList.remove('collapsed');
+        $('mainContent').style.marginLeft = 'var(--sidebar-w)';
+        $('mainContent').classList.remove('full');
+      }, 80);
+    }
+  }
+
+  // Boot
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})(); // end IIFE
+</script>
+
+</body>
+</html>
